@@ -1,3 +1,3 @@
-"""
-This file is the entry point for the app and has all the ui and stuff
-"""
+from cli import PARSER
+
+args = PARSER.parse_args()
