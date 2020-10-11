@@ -1,14 +1,26 @@
-from .utils import tokenize
 from collections import Counter, defaultdict
+from pathlib import Path
+
+from .utils import tokenize
 
 
 class Index:
-    def __init__(self):
-        self.term_frequencies = {}
-        self.doc_frequency = defaultdict(int)
+    """
+    The index which will be used by the PlagiarismChecker as the basis for plagiarism marking
+    """
 
-    def add_doc(self, doc_id, text):
-        tokens = Counter(tokenize(text))
-        self.term_frequencies[doc_id] = tokens
+    def __init__(self):
+        self.term_freqs = {}
+        self.doc_freq = defaultdict(int)
+
+    def add_doc(self, doc_name: Path, doc_contents: str):
+        """
+        Add the document to the index
+        :param doc_name: The name of the document
+        :param doc_contents: The contents of the document
+        :return: None
+        """
+        tokens = Counter(tokenize(doc_contents))
+        self.term_freqs[doc_name] = tokens
         for token in tokens:
-            self.doc_frequency[token] += 1
+            self.doc_freq[token] += 1
