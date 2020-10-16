@@ -1,7 +1,7 @@
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from .utils import tokenize
+from utils import tokenize
 
 
 class Index:

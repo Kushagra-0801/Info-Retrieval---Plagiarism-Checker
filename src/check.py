@@ -2,7 +2,7 @@ from math import log10
 from typing import Dict
 
 import utils
-from .make_index import Index
+from make_index import Index
 
 
 class PlagiarismChecker:

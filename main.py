@@ -1,8 +1,13 @@
+import json
 import pickle
 from pathlib import Path
 
+from check import PlagiarismChecker
 from cli import PARSER
 from make_index import Index
+from tabulate import tabulate
+
+THRESHOLD = 0.6
 
 
 def gen_index(path: Path) -> Index:
@@ -40,8 +45,18 @@ def main():
                     if not file.is_file():
                         continue
                     contents[file] = file.read_text()
-        # contents has the file contents now
-        # just need to do the plagiarism check now
+        with open('index.pk', 'rb') as f:
+            index = pickle.load(f)
+        checker = PlagiarismChecker(index)
+        data = {}
+        for file, contents in contents.items():
+            scores = checker.find_score(contents)
+            data[file] = sorted([(original, score) for original, score in scores.items() if score > THRESHOLD],
+                                reverse=True, key=lambda x: x[1])
+        if args.table:
+            tabulate(data)
+        elif args.json:
+            print(json.dumps(data))
 
 
 main()
