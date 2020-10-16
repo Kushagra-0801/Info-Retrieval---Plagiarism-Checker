@@ -21,7 +21,7 @@ class PlagiarismChecker:
         """
         score_list = {}
         total_docs = len(self.index.term_freqs)
-        tokens = utils.tokenize(contents)
+        tokens = set(utils.tokenize(contents))
         for document, tf_map in self.index.term_freqs.items():
             score = 0.0
             for token in tokens:
