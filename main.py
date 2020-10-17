@@ -3,9 +3,9 @@ import pickle
 from pathlib import Path
 from sys import stdin, stderr
 
-from check import PlagiarismChecker
-from make_index import Index
-from tabulate import tabulate
+from src.check import PlagiarismChecker
+from src.make_index import Index
+from src.tabulate import tabulate
 
 THRESHOLD = 0.6
 
@@ -13,14 +13,16 @@ THRESHOLD = 0.6
 def gen_index(args):
     p = Path(args.index)
     if not p.is_dir():
-        print("Index path must be a directory containing the corpus files", file=stderr)
+        print("Index path must be a directory containing the corpus files!", file=stderr)
         exit(1)
     index = Index()
-    for file in p.iterdir():
-        if not file.is_file():
+    for file_path in p.iterdir():
+        if not file_path.is_file():
             continue
-        contents = file.read_text()
-        index.add_doc(file, contents)
+        with open(file_path, 'r', encoding='unicode_escape') as file:
+            contents = file.read()
+            index.add_doc(file_path, contents)
+    index.normalize_docs()
     with open('index.pk', 'wb+') as f:
         pickle.dump(index, f)
     print('Index generated in index.pk')
@@ -33,18 +35,14 @@ def check_for_plagiarism(args):
     else:
         p = Path(args.file)
         if p.is_file():
-            try:
-                contents[p] = p.read_text()
-            except ValueError:
-                print(f'{p} is not in utf-8 encoding')
+            with open(p, 'r', encoding='unicode_escape') as file:
+                contents[file] = file.read()
         elif p.is_dir():
             for file in p.iterdir():
                 if not file.is_file():
                     continue
-                try:
-                    contents[file] = file.read_text()
-                except ValueError:
-                    print(f'{file} is not in utf-8 encoding')
+                with open(file, 'r', encoding='unicode_escape') as f:
+                    contents[file] = f.read()
     with open('index.pk', 'rb') as f:
         index = pickle.load(f)
     checker = PlagiarismChecker(index)

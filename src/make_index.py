@@ -1,7 +1,8 @@
 from collections import Counter, defaultdict
 from pathlib import Path
+from math import log10
 
-from utils import tokenize
+from .utils import tokenize, normalize
 
 
 class Index:
@@ -11,7 +12,7 @@ class Index:
 
     def __init__(self):
         self.term_freqs = {}
-        self.doc_freq = defaultdict(int)
+        self.doc_freq = defaultdict(float)
 
     def add_doc(self, doc_name: Path, doc_contents: str):
         """
@@ -24,3 +25,15 @@ class Index:
         self.term_freqs[doc_name] = tokens
         for token in tokens:
             self.doc_freq[token] += 1
+
+    def normalize_docs(self):
+        """
+        Apply Cosine Normalization to each doc in the corpus
+        :param: None
+        :return: None
+        """
+        total_docs = len(self.term_freqs)
+        for token, count in self.doc_freq.items():
+            self.doc_freq[token] = log10(total_docs / count)
+        for doc, tf_map in self.term_freqs.items():
+            self.term_freqs[doc] = normalize(tf_map, self.doc_freq)

@@ -1,9 +1,9 @@
-from math import log10
+from collections import Counter
 from pathlib import Path
 from typing import Dict
 
-import utils
-from make_index import Index
+from .utils import tokenize, normalize
+from .make_index import Index
 
 
 class PlagiarismChecker:
@@ -21,14 +21,11 @@ class PlagiarismChecker:
         :return: Dictionary of plagiarism score w.r.t each original document
         """
         score_list = {}
-        total_docs = len(self.index.term_freqs)
-        tokens = set(utils.tokenize(contents))
+        tokens = normalize(dict(Counter(tokenize(contents))), self.index.doc_freq)
         for document, tf_map in self.index.term_freqs.items():
             score = 0.0
-            for token in tokens:
+            for token, tf_idf in tokens.items():
                 if token in tf_map:
-                    term_weight = 1.0 + log10(tf_map[token])
-                    doc_freq_weight = log10(total_docs / self.index.doc_freq[token])
-                    score += term_weight * doc_freq_weight
+                    score += tf_idf * tf_map[token]
             score_list[document] = score
         return score_list
