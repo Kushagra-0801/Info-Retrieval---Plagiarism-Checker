@@ -1,8 +1,9 @@
 from math import log10
+from pathlib import Path
 from typing import Dict
 
 import utils
-from .make_index import Index
+from make_index import Index
 
 
 class PlagiarismChecker:
@@ -13,7 +14,7 @@ class PlagiarismChecker:
     def __init__(self, index: Index):
         self.index = index
 
-    def find_score(self, contents: str) -> Dict[str, float]:
+    def find_score(self, contents: str) -> Dict[Path, float]:
         """
         Check file contents for plagiarism
         :param contents: The file contents to check for plagiarism

@@ -1,7 +1,7 @@
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from typing import List
+
+import nltk
+from nltk.stem import WordNetLemmatizer
 
 
 def tokenize(text) -> List[str]:
