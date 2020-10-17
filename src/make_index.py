@@ -32,7 +32,7 @@ class Index:
         :param: None
         :return: None
         """
-        total_docs = len(self.term_freqs)
+        total_docs = float(len(self.term_freqs))  # Float conversion for float division in log10(total_docs/count)
         new_doc_freq = {}
         for token, count in self.doc_freq.items():
             new_doc_freq[token] = log10(total_docs / count)

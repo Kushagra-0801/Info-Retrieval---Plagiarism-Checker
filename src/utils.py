@@ -21,7 +21,7 @@ def normalize(term_freq: Dict[str, int], doc_freq: Dict[str, float]) -> Dict[str
     new_term_freq = {}
     for token, count in term_freq.items():
         new_term_freq[token] = (1 + log10(count)) * doc_freq.get(token, 0.0)
-        l2norm += term_freq[token] ** 2
+        l2norm += new_term_freq[token] ** 2
     l2norm = sqrt(l2norm)
     if l2norm != 0.0:
         for token in new_term_freq.keys():

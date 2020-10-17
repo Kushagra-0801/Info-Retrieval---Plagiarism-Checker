@@ -21,7 +21,7 @@ class PlagiarismChecker:
         :return: Dictionary of plagiarism score w.r.t each original document
         """
         score_list = {}
-        tokens = normalize(dict(Counter(tokenize(contents))), self.index.doc_freq)
+        tokens = normalize(Counter(tokenize(contents)), self.index.doc_freq)
         for document, tf_map in self.index.term_freqs.items():
             score = 0.0
             for token, tf_idf in tokens.items():
