@@ -1,13 +1,19 @@
 import argparse
 import pickle
 from pathlib import Path
-from sys import stdin, stderr
+from sys import stdin, stderr, path
 
-from src.check import PlagiarismChecker
-from src.make_index import Index
-from src.tabulate import tabulate
+project_dir = Path(__file__).parent.resolve()
+if str(project_dir) not in path:
+    path.append(str(project_dir))
+if str(project_dir / 'src') not in path:
+    path.append(str(project_dir / 'src'))
 
-THRESHOLD = 0.6
+from check import PlagiarismChecker
+from make_index import Index
+from tabulate import tabulate
+
+THRESHOLD = 0.3
 
 
 def gen_index(args):
@@ -16,12 +22,11 @@ def gen_index(args):
         print("Index path must be a directory containing the corpus files!", file=stderr)
         exit(1)
     index = Index()
-    for file_path in p.iterdir():
-        if not file_path.is_file():
+    for file in p.iterdir():
+        if not file.is_file():
             continue
-        with open(file_path, 'r', encoding='unicode_escape') as file:
-            contents = file.read()
-            index.add_doc(file_path, contents)
+        contents = file.read_text(encoding='unicode_escape')
+        index.add_doc(file, contents)
     index.normalize_docs()
     with open('index.pk', 'wb+') as f:
         pickle.dump(index, f)
@@ -35,14 +40,12 @@ def check_for_plagiarism(args):
     else:
         p = Path(args.file)
         if p.is_file():
-            with open(p, 'r', encoding='unicode_escape') as file:
-                contents[file] = file.read()
+            contents[p] = p.read_text(encoding='unicode_escape')
         elif p.is_dir():
             for file in p.iterdir():
                 if not file.is_file():
                     continue
-                with open(file, 'r', encoding='unicode_escape') as f:
-                    contents[file] = f.read()
+                contents[file] = file.read_text(encoding='unicode_escape')
     with open('index.pk', 'rb') as f:
         index = pickle.load(f)
     checker = PlagiarismChecker(index)

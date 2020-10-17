@@ -2,7 +2,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from math import log10
 
-from .utils import tokenize, normalize
+from utils import tokenize, normalize
 
 
 class Index:
@@ -12,7 +12,7 @@ class Index:
 
     def __init__(self):
         self.term_freqs = {}
-        self.doc_freq = defaultdict(float)
+        self.doc_freq = defaultdict(int)
 
     def add_doc(self, doc_name: Path, doc_contents: str):
         """
@@ -33,7 +33,9 @@ class Index:
         :return: None
         """
         total_docs = len(self.term_freqs)
+        new_doc_freq = {}
         for token, count in self.doc_freq.items():
-            self.doc_freq[token] = log10(total_docs / count)
+            new_doc_freq[token] = log10(total_docs / count)
+        self.doc_freq = new_doc_freq
         for doc, tf_map in self.term_freqs.items():
             self.term_freqs[doc] = normalize(tf_map, self.doc_freq)

@@ -1,6 +1,5 @@
-from collections import defaultdict
-from typing import List, Dict
 from math import log10, sqrt
+from typing import List, Dict
 
 import nltk
 from nltk.stem import WordNetLemmatizer
@@ -17,13 +16,14 @@ def tokenize(text) -> List[str]:
     return tokens
 
 
-def normalize(term_freq: Dict[str, float], doc_freq: defaultdict) -> Dict[str, float]:
+def normalize(term_freq: Dict[str, int], doc_freq: Dict[str, float]) -> Dict[str, float]:
     l2norm = 0.0
-    for key, value in term_freq.items():
-        term_freq[key] = (1 + log10(value)) * doc_freq[key]
-        l2norm += pow(term_freq[key], 2)
+    new_term_freq = {}
+    for token, count in term_freq.items():
+        new_term_freq[token] = (1 + log10(count)) * doc_freq.get(token, 0.0)
+        l2norm += term_freq[token] ** 2
     l2norm = sqrt(l2norm)
     if l2norm != 0.0:
-        for key in term_freq.keys():
-            term_freq[key] /= l2norm
-    return term_freq
+        for token in new_term_freq.keys():
+            new_term_freq[token] /= l2norm
+    return new_term_freq

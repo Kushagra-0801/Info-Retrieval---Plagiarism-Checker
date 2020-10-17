@@ -2,8 +2,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict
 
-from .utils import tokenize, normalize
-from .make_index import Index
+from utils import tokenize, normalize
+from make_index import Index
 
 
 class PlagiarismChecker:
