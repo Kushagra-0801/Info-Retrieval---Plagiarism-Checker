@@ -1,4 +1,3 @@
-from collections import Counter
 from pathlib import Path
 from typing import Dict
 
@@ -21,11 +20,8 @@ class PlagiarismChecker:
         :return: Dictionary of plagiarism score w.r.t each original document
         """
         score_list = {}
-        tokens = normalize(Counter(tokenize(contents)), self.index.doc_freq)
+        tokens = normalize(tokenize(contents), self.index.doc_freq)
         for document, tf_map in self.index.term_freqs.items():
-            score = 0.0
-            for token, tf_idf in tokens.items():
-                if token in tf_map:
-                    score += tf_idf * tf_map[token]
+            score = sum(tf_idf * tf_map[token] for token, tf_idf in tokens.items() if token in tf_map)
             score_list[document] = score
         return score_list
