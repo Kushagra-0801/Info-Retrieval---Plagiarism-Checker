@@ -1,8 +1,8 @@
 import argparse
 import pickle
+import time
 from pathlib import Path
 from sys import stdin, stderr, path
-import time
 
 project_dir = Path(__file__).parent.resolve()
 if str(project_dir) not in path:
@@ -74,6 +74,7 @@ def main():
     args.func(args)
 
 
-start_time = time.time()
-main()
-print("Execution Time = ", time.time() - start_time)
+if __name__ == '__main__':
+    start_time = time.time()
+    main()
+    print("Execution Time = ", time.time() - start_time)
