@@ -23,6 +23,7 @@ along with [Cosine Similarity](https://en.wikipedia.org/wiki/Cosine_similarity) 
 
 - Make a folder with only the files that are meant to be included in the corpus
 - $ `python main.py index "path/to/folder/made/above"`
+- Index can be updated by running the same command with updated corpus folder.
 
 ### Querying
 
