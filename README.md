@@ -9,10 +9,9 @@ along with [Cosine Similarity](https://en.wikipedia.org/wiki/Cosine_similarity) 
 - [Python 3.8+](https://www.python.org/)
 - [Natural Language ToolKit](https://www.nltk.org/)
 - [NLTK Popular Model Collection](http://www.nltk.org/nltk_data/)
+- [Source Code](https://github.com/Kushagra-0801/Info-Retrieval---Plagiarism-Checker.git)
 
-### Steps
-
-- $ `git clone https://github.com/Kushagra-0801/Info-Retrieval---Plagiarism-Checker.git`
+Note: Source Code can be `git clone`ed if not already present.
 
 ## Usage
 
