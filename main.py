@@ -1,26 +1,34 @@
 import argparse
 import pickle
 from pathlib import Path
-from sys import stdin, stderr
+from sys import stdin, stderr, path
+import time
+
+project_dir = Path(__file__).parent.resolve()
+if str(project_dir) not in path:
+    path.append(str(project_dir))
+if str(project_dir / 'src') not in path:
+    path.append(str(project_dir / 'src'))
 
 from check import PlagiarismChecker
 from make_index import Index
 from tabulate import tabulate
 
-THRESHOLD = 0.6
+THRESHOLD = 0.3
 
 
 def gen_index(args):
     p = Path(args.index)
     if not p.is_dir():
-        print("Index path must be a directory containing the corpus files", file=stderr)
+        print("Index path must be a directory containing the corpus files!", file=stderr)
         exit(1)
     index = Index()
     for file in p.iterdir():
         if not file.is_file():
             continue
-        contents = file.read_text()
+        contents = file.read_text(encoding='unicode_escape')
         index.add_doc(file, contents)
+    index.normalize_docs()
     with open('index.pk', 'wb+') as f:
         pickle.dump(index, f)
     print('Index generated in index.pk')
@@ -33,18 +41,12 @@ def check_for_plagiarism(args):
     else:
         p = Path(args.file)
         if p.is_file():
-            try:
-                contents[p] = p.read_text()
-            except ValueError:
-                print(f'{p} is not in utf-8 encoding')
+            contents[p] = p.read_text(encoding='unicode_escape')
         elif p.is_dir():
             for file in p.iterdir():
                 if not file.is_file():
                     continue
-                try:
-                    contents[file] = file.read_text()
-                except ValueError:
-                    print(f'{file} is not in utf-8 encoding')
+                contents[file] = file.read_text(encoding='unicode_escape')
     with open('index.pk', 'rb') as f:
         index = pickle.load(f)
     checker = PlagiarismChecker(index)
@@ -72,4 +74,6 @@ def main():
     args.func(args)
 
 
+start_time = time.time()
 main()
+print("Execution Time = ", time.time() - start_time)
