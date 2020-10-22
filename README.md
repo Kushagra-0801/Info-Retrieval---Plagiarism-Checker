@@ -34,3 +34,7 @@ Note: Source Code can be `git clone`ed if not already present.
 - $ `python main.py query "path/to/file"`
 #### Multiple Files
 - $ `python main.py query "path/to/file1" "path/to/file2"`
+
+## Documentation
+- Make sure you have the `docs/build` folder.
+- Open `docs/build/index.html` in your browser.
